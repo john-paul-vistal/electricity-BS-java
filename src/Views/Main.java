@@ -8,8 +8,19 @@ package Views;
 import Controllers.*;
 import Interface.*;
 import Models.*;
+import java.awt.Toolkit;
+import java.text.DecimalFormat;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
  *
@@ -19,18 +30,32 @@ public class Main extends javax.swing.JFrame {
 
     AdminInterface adminControllers = new AdminController();
     HouseholdInterface houseControllers = new HouseholdController();
+    BillInterface billControllers = new BillController();
+
+    Bill bill;
 
     int adminID;
+    int billID;
     int householdID;
+    int userID = 100020;
+    double electricityRate = 8.9012;
 
     /**
      * Creates new form Main
      */
     public Main() {
         initComponents();
+        icon();
         initialDisplay();
         loadAdmins();
         loadHousehold();
+        loadBills();
+        chart();
+        display();
+    }
+
+    private void icon() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo.png")));
     }
 
     public void initialDisplay() {
@@ -78,6 +103,66 @@ public class Main extends javax.swing.JFrame {
         }
     }
 
+    public void loadBills() {
+        DefaultTableModel model = (DefaultTableModel) billsTable.getModel();
+        model.setRowCount(0);
+        DecimalFormat formatter = new DecimalFormat("#0.00");
+        try {
+            for (Bill bill : billControllers.getAllBill()) {
+                String status;
+                if (bill.getStatus() == 1) {
+                    status = "PAID";
+                } else if (bill.getStatus() == 2) {
+                    status = "UNPAID";
+                } else {
+                    status = "OVERDUE";
+                }
+                model.addRow(new Object[]{bill.getId(), bill.getElectricityLineNo(), bill.getReading(), formatter.format(bill.getAmountDue()), status, bill.getRecordedDate(), bill.getDueDate(), adminControllers.getAdmin(bill.getRecordedBy()).getlName() + ", " + adminControllers.getAdmin(bill.getRecordedBy()).getfName()});
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+
+    public void chart() {
+        DefaultCategoryDataset barchartData = new DefaultCategoryDataset();
+        barchartData.setValue(20000, "Amount", "January");
+        barchartData.setValue(18000, "Amount", "February");
+        barchartData.setValue(24000, "Amount", "March");
+        barchartData.setValue(20000, "Amount", "April");
+        barchartData.setValue(16000, "Amount", "May");
+        barchartData.setValue(19500, "Amount", "June");
+        barchartData.setValue(19500, "Amount", "July");
+        barchartData.setValue(25000, "Amount", "August");
+        barchartData.setValue(15402, "Amount", "September");
+        barchartData.setValue(26540, "Amount", "October");
+        barchartData.setValue(30000, "Amount", "November");
+        barchartData.setValue(50000, "Amount", "December");
+        JFreeChart barchart = ChartFactory.createBarChart3D("YEARLY PROFIT REPORT", "MONTHLY", "AMOUNT", barchartData, PlotOrientation.VERTICAL, false, true, false);
+        barchart.setBackgroundPaint(Color.CYAN);
+        barchart.getTitle().setPaint(Color.RED);
+        CategoryPlot barchrt = barchart.getCategoryPlot();
+        barchrt.setRangeGridlinePaint(Color.BLUE);
+        ChartPanel barPanel = new ChartPanel(barchart);
+        chart.removeAll();
+        chart.add(barPanel, BorderLayout.CENTER);
+        chart.validate();
+    }
+    
+    
+    public void display(){
+        try{
+        String householdCount = Integer.toString(houseControllers.getAllHousehold().size());
+        String employeeCount = Integer.toString(adminControllers.getAllAdmins().size());
+        String unpaidBill = Integer.toString(billControllers.getAllUnpaidBill().size());
+        workersCountlbl.setText(employeeCount);
+        householdCountlbl.setText(householdCount);
+        unpaidBillslbl.setText(unpaidBill);
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -107,19 +192,26 @@ public class Main extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
+        unpaidBillslbl = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
-        jLabel17 = new javax.swing.JLabel();
+        workersCountlbl = new javax.swing.JLabel();
         jPanel9 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        jPanel8 = new javax.swing.JPanel();
+        householdCountlbl = new javax.swing.JLabel();
+        chart = new javax.swing.JPanel();
         tab2 = new javax.swing.JPanel();
+        billsTableContainer = new javax.swing.JScrollPane();
+        billsTable = new javax.swing.JTable();
+        printBillsBtn = new javax.swing.JButton();
+        tfElectricityLineNo = new javax.swing.JTextField();
+        tfMeterReading = new javax.swing.JTextField();
+        saveBillBtn = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        refreshBills = new javax.swing.JButton();
         tab3 = new javax.swing.JPanel();
         deleteHouseholdBtn = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
@@ -158,7 +250,7 @@ public class Main extends javax.swing.JFrame {
         });
 
         transaction.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        transaction.setText("Transactions");
+        transaction.setText("Billing");
         transaction.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 transactionActionPerformed(evt);
@@ -250,7 +342,7 @@ public class Main extends javax.swing.JFrame {
                 .addComponent(acounts, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(admins, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 155, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 159, Short.MAX_VALUE)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(sideNavBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -299,16 +391,14 @@ public class Main extends javax.swing.JFrame {
         jPanel3.setBackground(new java.awt.Color(0, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/logo.png"))); // NOI18N
+        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/upaidbills.png"))); // NOI18N
 
         jLabel11.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel11.setText("PROFIT");
+        jLabel11.setText("UNPAID BILLS");
 
-        jLabel14.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
-        jLabel14.setText("P");
-
-        jLabel15.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel15.setText("24,000");
+        unpaidBillslbl.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        unpaidBillslbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        unpaidBillslbl.setText("0");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -320,27 +410,23 @@ public class Main extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(48, 48, 48)
-                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addComponent(jLabel11)
+                        .addContainerGap(95, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(unpaidBillslbl, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(56, 56, 56))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(17, 17, 17)
                 .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(unpaidBillslbl, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(23, 23, 23))
         );
 
@@ -348,13 +434,14 @@ public class Main extends javax.swing.JFrame {
         jPanel6.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jPanel6.setPreferredSize(new java.awt.Dimension(293, 104));
 
-        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/logo.png"))); // NOI18N
+        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/employees.png"))); // NOI18N
 
         jLabel13.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel13.setText("WORKERS");
 
-        jLabel17.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel17.setText("25");
+        workersCountlbl.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        workersCountlbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        workersCountlbl.setText("0");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -365,36 +452,39 @@ public class Main extends javax.swing.JFrame {
                 .addComponent(jLabel10)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel13))
+                        .addGap(24, 24, 24)
+                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(61, 61, 61)
-                        .addComponent(jLabel17, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
+                        .addComponent(workersCountlbl, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(54, 54, 54))))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(jPanel6Layout.createSequentialGroup()
                 .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(workersCountlbl, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 18, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jPanel9.setBackground(new java.awt.Color(255, 255, 0));
         jPanel9.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jPanel9.setPreferredSize(new java.awt.Dimension(293, 104));
 
-        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/logo.png"))); // NOI18N
+        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/household_1.png"))); // NOI18N
 
         jLabel12.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel12.setText("HOUSEHOLDS");
 
-        jLabel16.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel16.setText("500");
+        householdCountlbl.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        householdCountlbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        householdCountlbl.setText("0");
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -405,40 +495,31 @@ public class Main extends javax.swing.JFrame {
                 .addComponent(jLabel8)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGap(61, 61, 61)
-                        .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(jPanel9Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel12)
-                        .addContainerGap(81, Short.MAX_VALUE))))
+                        .addComponent(jLabel12))
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addGap(61, 61, 61)
+                        .addComponent(householdCountlbl, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(householdCountlbl, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 12, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(23, 23, 23))
         );
 
-        jPanel8.setBackground(new java.awt.Color(51, 123, 249));
-        jPanel8.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-
-        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
-        jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
+        chart.setBackground(new java.awt.Color(51, 123, 249));
+        chart.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        chart.setLayout(new java.awt.GridLayout());
 
         javax.swing.GroupLayout tab1Layout = new javax.swing.GroupLayout(tab1);
         tab1.setLayout(tab1Layout);
@@ -447,7 +528,7 @@ public class Main extends javax.swing.JFrame {
             .addGroup(tab1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(tab1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(chart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(tab1Layout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -465,30 +546,120 @@ public class Main extends javax.swing.JFrame {
                     .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(chart, javax.swing.GroupLayout.DEFAULT_SIZE, 503, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         tab2.setBackground(new java.awt.Color(102, 204, 255));
 
-        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
-        jLabel4.setText("Hello From Transaction");
+        billsTable.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        billsTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "id", "HOUSELINE NO.", "METER READING(kwH)", "AMOUNT DUE(P)", "STATUS", "RECORDED DATE", "DUE DATE", "RECORDED BY"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        billsTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                billsTableMouseClicked(evt);
+            }
+        });
+        billsTableContainer.setViewportView(billsTable);
+        if (billsTable.getColumnModel().getColumnCount() > 0) {
+            billsTable.getColumnModel().getColumn(0).setMinWidth(0);
+            billsTable.getColumnModel().getColumn(0).setPreferredWidth(0);
+            billsTable.getColumnModel().getColumn(0).setMaxWidth(0);
+            billsTable.getColumnModel().getColumn(1).setResizable(false);
+            billsTable.getColumnModel().getColumn(2).setResizable(false);
+            billsTable.getColumnModel().getColumn(3).setResizable(false);
+            billsTable.getColumnModel().getColumn(4).setResizable(false);
+            billsTable.getColumnModel().getColumn(5).setResizable(false);
+            billsTable.getColumnModel().getColumn(6).setResizable(false);
+            billsTable.getColumnModel().getColumn(7).setResizable(false);
+        }
+
+        printBillsBtn.setText("Print Bills");
+        printBillsBtn.setEnabled(false);
+
+        tfElectricityLineNo.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+
+        tfMeterReading.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+
+        saveBillBtn.setText("Save");
+        saveBillBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveBillBtnActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("ELectric Line No:");
+
+        jLabel4.setText("Meter Reading(kwH)");
+
+        refreshBills.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/refresh.png"))); // NOI18N
+        refreshBills.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshBillsActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout tab2Layout = new javax.swing.GroupLayout(tab2);
         tab2.setLayout(tab2Layout);
         tab2Layout.setHorizontalGroup(
             tab2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(tab2Layout.createSequentialGroup()
-                .addGap(93, 93, 93)
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 579, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(307, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(tab2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(billsTableContainer)
+                    .addGroup(tab2Layout.createSequentialGroup()
+                        .addGroup(tab2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(tfElectricityLineNo, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(tab2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addGroup(tab2Layout.createSequentialGroup()
+                                .addComponent(tfMeterReading, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(saveBillBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 324, Short.MAX_VALUE)
+                        .addGroup(tab2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(printBillsBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(refreshBills, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
         );
         tab2Layout.setVerticalGroup(
             tab2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(tab2Layout.createSequentialGroup()
-                .addGap(50, 50, 50)
-                .addComponent(jLabel4)
-                .addContainerGap(570, Short.MAX_VALUE))
+                .addGroup(tab2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(tab2Layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addGroup(tab2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
+                        .addGap(5, 5, 5)
+                        .addGroup(tab2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tfElectricityLineNo, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tfMeterReading, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(saveBillBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(tab2Layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(printBillsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(refreshBills, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(billsTableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         tab3.setBackground(new java.awt.Color(102, 204, 255));
@@ -512,7 +683,7 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        householdTable.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        householdTable.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         householdTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -605,9 +776,7 @@ public class Main extends javax.swing.JFrame {
                             .addComponent(searchHouseholdBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .addComponent(tfSearchHousehold, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE))
                         .addGap(15, 15, 15))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tab3Layout.createSequentialGroup()
-                        .addComponent(refresh1)
-                        .addGap(0, 0, 0)))
+                    .addComponent(refresh1, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGroup(tab3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(householdTableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 564, Short.MAX_VALUE)
                     .addGroup(tab3Layout.createSequentialGroup()
@@ -622,7 +791,7 @@ public class Main extends javax.swing.JFrame {
 
         tab4.setBackground(new java.awt.Color(102, 204, 255));
 
-        adminTable.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        adminTable.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         adminTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -746,9 +915,7 @@ public class Main extends javax.swing.JFrame {
                             .addComponent(searchAdminBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .addComponent(searchAdmin, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE))
                         .addGap(15, 15, 15))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tab4Layout.createSequentialGroup()
-                        .addComponent(refresh)
-                        .addGap(0, 0, 0)))
+                    .addComponent(refresh, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGroup(tab4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(adminTableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 564, Short.MAX_VALUE)
                     .addGroup(tab4Layout.createSequentialGroup()
@@ -891,12 +1058,16 @@ public class Main extends javax.swing.JFrame {
         deleteAdminBtn.setEnabled(false);
         modifyAdminBtn.setEnabled(false);
         loadAdmins();
+        chart();
+        display();
     }//GEN-LAST:event_refreshActionPerformed
 
     private void addAdminBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addAdminBtnActionPerformed
         Admin_Form show = new Admin_Form(this, true);
         show.setVisible(true);
         loadAdmins();
+        chart();
+        display();
     }//GEN-LAST:event_addAdminBtnActionPerformed
 
     private void adminTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_adminTableMouseClicked
@@ -931,6 +1102,8 @@ public class Main extends javax.swing.JFrame {
         deleteAdminBtn.setEnabled(false);
         modifyAdminBtn.setEnabled(false);
         loadAdmins();
+        chart();
+        display();
     }//GEN-LAST:event_modifyAdminBtnActionPerformed
 
     private void deleteHouseholdBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteHouseholdBtnActionPerformed
@@ -949,6 +1122,8 @@ public class Main extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
         loadHousehold();
+        chart();
+        display();
     }//GEN-LAST:event_deleteHouseholdBtnActionPerformed
 
     private void refresh1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refresh1ActionPerformed
@@ -957,6 +1132,8 @@ public class Main extends javax.swing.JFrame {
         deleteHouseholdBtn.setEnabled(false);
         modifyHouseholdBtn.setEnabled(false);
         loadHousehold();
+        chart();
+        display();
     }//GEN-LAST:event_refresh1ActionPerformed
 
     private void householdTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_householdTableMouseClicked
@@ -968,7 +1145,7 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_householdTableMouseClicked
 
     private void tfSearchHouseholdCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_tfSearchHouseholdCaretUpdate
-       DefaultTableModel model = (DefaultTableModel) householdTable.getModel();
+        DefaultTableModel model = (DefaultTableModel) householdTable.getModel();
         model.setRowCount(0);
         try {
             for (Household house : houseControllers.getHouseHold(tfSearchHousehold.getText())) {
@@ -983,16 +1160,80 @@ public class Main extends javax.swing.JFrame {
         Household_Form show = new Household_Form(this, true);
         show.setVisible(true);
         loadHousehold();
+        chart();
+        display();
     }//GEN-LAST:event_addHouseholdBtnActionPerformed
 
     private void modifyHouseholdBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyHouseholdBtnActionPerformed
-        Modify_Household_Form show = new Modify_Household_Form(this,true,householdID);
+        Modify_Household_Form show = new Modify_Household_Form(this, true, householdID);
         show.setVisible(true);
         addHouseholdBtn.setEnabled(true);
         deleteHouseholdBtn.setEnabled(false);
         modifyHouseholdBtn.setEnabled(false);
         loadHousehold();
+        chart();
+        display();
     }//GEN-LAST:event_modifyHouseholdBtnActionPerformed
+
+    private void saveBillBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBillBtnActionPerformed
+        if ("Save".equals(saveBillBtn.getText())) {
+
+            String electricityLineNo = tfElectricityLineNo.getText();
+            String meterReading = tfMeterReading.getText();
+            double amountDue = Double.parseDouble(meterReading) * electricityRate;
+            try {
+                bill = new Bill(0, Integer.parseInt(electricityLineNo), Integer.parseInt(meterReading), amountDue, 2, "2020-11-19", "2020-12-19", userID);
+                billControllers.addBill(bill);
+                JOptionPane.showMessageDialog(null, "Saved");
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            }
+
+        } else {
+            int modify = JOptionPane.showConfirmDialog(null, "Save Changes?", "Modify Record", JOptionPane.OK_CANCEL_OPTION);
+            if (modify == 0) {
+                String electricityLineNo = tfElectricityLineNo.getText();
+                String meterReading = tfMeterReading.getText();
+                double amountDue = Double.parseDouble(meterReading) * electricityRate;
+                try {
+                    bill = new Bill(billID, Integer.parseInt(electricityLineNo), Integer.parseInt(meterReading), amountDue, 2, "2020-11-19", "2020-12-19", userID);
+                    billControllers.updateBill(bill);
+                    JOptionPane.showMessageDialog(null, "Updated!");
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, e.getMessage());
+                }
+            }
+        }
+
+        tfElectricityLineNo.setText("");
+        tfMeterReading.setText("");
+        saveBillBtn.setText("Save");
+        loadBills();
+        chart();
+        display();
+
+    }//GEN-LAST:event_saveBillBtnActionPerformed
+
+    private void billsTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_billsTableMouseClicked
+
+        DefaultTableModel model = (DefaultTableModel) billsTable.getModel();
+        billID = Integer.parseInt(model.getValueAt(billsTable.getSelectedRow(), 0).toString());
+        int electricityLineNo = Integer.parseInt(model.getValueAt(billsTable.getSelectedRow(), 1).toString());
+        int reading = Integer.parseInt(model.getValueAt(billsTable.getSelectedRow(), 2).toString());
+        tfElectricityLineNo.setText(Integer.toString(electricityLineNo));
+        tfMeterReading.setText(Integer.toString(reading));
+        saveBillBtn.setText("Update");
+    }//GEN-LAST:event_billsTableMouseClicked
+
+    private void refreshBillsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshBillsActionPerformed
+        tfElectricityLineNo.setText("");
+        tfMeterReading.setText("");
+        saveBillBtn.setText("Save");
+        loadBills();
+        chart();
+        display();
+    }//GEN-LAST:event_refreshBillsActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1036,12 +1277,16 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JTable adminTable;
     private javax.swing.JScrollPane adminTableContainer;
     private javax.swing.JButton admins;
+    private javax.swing.JTable billsTable;
+    private javax.swing.JScrollPane billsTableContainer;
+    private javax.swing.JPanel chart;
     private javax.swing.JButton close;
     private javax.swing.JPanel container;
     private javax.swing.JButton dashBoard;
     private javax.swing.JButton deleteAdminBtn;
     private javax.swing.JButton deleteHouseholdBtn;
     private javax.swing.JPanel header;
+    private javax.swing.JLabel householdCountlbl;
     private javax.swing.JTable householdTable;
     private javax.swing.JScrollPane householdTableContainer;
     private javax.swing.JLabel jLabel1;
@@ -1049,17 +1294,13 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
@@ -1067,9 +1308,12 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel logo;
     private javax.swing.JButton modifyAdminBtn;
     private javax.swing.JButton modifyHouseholdBtn;
+    private javax.swing.JButton printBillsBtn;
     private javax.swing.JLabel profileIcon;
     private javax.swing.JButton refresh;
     private javax.swing.JButton refresh1;
+    private javax.swing.JButton refreshBills;
+    private javax.swing.JButton saveBillBtn;
     private javax.swing.JTextField searchAdmin;
     private javax.swing.JButton searchAdminBtn;
     private javax.swing.JButton searchHouseholdBtn;
@@ -1080,8 +1324,12 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JPanel tab2;
     private javax.swing.JPanel tab3;
     private javax.swing.JPanel tab4;
+    private javax.swing.JTextField tfElectricityLineNo;
+    private javax.swing.JTextField tfMeterReading;
     private javax.swing.JTextField tfSearchHousehold;
     private javax.swing.JButton transaction;
+    private javax.swing.JLabel unpaidBillslbl;
     private javax.swing.JLabel userName;
+    private javax.swing.JLabel workersCountlbl;
     // End of variables declaration//GEN-END:variables
 }

@@ -3,11 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Interface/HouseholdInterface.java</file>
-            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Controllers/HouseholdController.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Controllers/BillController.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Interface/BillInterface.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Controllers/AdminController.java</file>
             <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Views/Main.java</file>
-            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Models/Household.java</file>
-            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Views/Modify_Household_Form.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Models/Bill.java</file>
         </group>
     </open-files>
 </project-private>
