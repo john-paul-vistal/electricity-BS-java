@@ -51,13 +51,82 @@ public class BillController implements BillInterface {
     }
 
     @Override
-    public List<Bill> getBill(String search) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Bill> searchBill(String electricityLineNo) throws SQLException {
+        billList.clear();
+        String query = "SELECT * FROM bills WHERE electricityLineNo = '" + electricityLineNo + "'";
+
+        conn = ConnectionFactory.getConnection();
+        state = conn.createStatement();
+        rs = state.executeQuery(query);
+        while (rs.next()) {
+            bill = new Bill(rs.getInt("id"),
+                    rs.getInt("electricityLineNo"),
+                    rs.getInt("reading"),
+                    rs.getDouble("amountDue"),
+                    rs.getInt("status"),
+                    rs.getString("recordedDate"),
+                    rs.getString("dueDate"),
+                    rs.getInt("recordedBy")
+            );
+            billList.add(bill);
+        }
+        DBUtil.close(conn);
+        DBUtil.close(state);
+        DBUtil.close(rs);
+
+        return billList;
+    }
+    @Override
+    public List<Bill> searchUnpaidBill(String electricityLineNo) throws SQLException {
+        billList.clear();
+        String query = "SELECT * FROM bills WHERE electricityLineNo = '" + electricityLineNo + "' AND status != 1";
+
+        conn = ConnectionFactory.getConnection();
+        state = conn.createStatement();
+        rs = state.executeQuery(query);
+        while (rs.next()) {
+            bill = new Bill(rs.getInt("id"),
+                    rs.getInt("electricityLineNo"),
+                    rs.getInt("reading"),
+                    rs.getDouble("amountDue"),
+                    rs.getInt("status"),
+                    rs.getString("recordedDate"),
+                    rs.getString("dueDate"),
+                    rs.getInt("recordedBy")
+            );
+            billList.add(bill);
+        }
+        DBUtil.close(conn);
+        DBUtil.close(state);
+        DBUtil.close(rs);
+
+        return billList;
     }
 
     @Override
     public Bill getBill(int id) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        billList.clear();
+        String query = "SELECT * FROM bills WHERE id = " + id + "";
+
+        conn = ConnectionFactory.getConnection();
+        state = conn.createStatement();
+        rs = state.executeQuery(query);
+        while (rs.next()) {
+            bill = new Bill(rs.getInt("id"),
+                    rs.getInt("electricityLineNo"),
+                    rs.getInt("reading"),
+                    rs.getDouble("amountDue"),
+                    rs.getInt("status"),
+                    rs.getString("recordedDate"),
+                    rs.getString("dueDate"),
+                    rs.getInt("recordedBy")
+            );
+        }
+        DBUtil.close(conn);
+        DBUtil.close(state);
+        DBUtil.close(rs);
+
+        return bill;
     }
 
     @Override
@@ -73,7 +142,7 @@ public class BillController implements BillInterface {
 
     @Override
     public void updateBill(Bill bill) throws SQLException {
-        String query = "UPDATE bills SET electricityLineNo = '" + bill.getElectricityLineNo()+ "', reading= '" + bill.getReading()+ "',amountDue= '" + bill.getAmountDue()+ "',status= '" + bill.getStatus()+ "',recordedDate= '" + bill.getDueDate()+ "',dueDate= '" + bill.getDueDate()+ "',recordedBy= '" + bill.getRecordedBy()+ "'WHERE id = '" + bill.getId()+ "'";
+        String query = "UPDATE bills SET electricityLineNo = '" + bill.getElectricityLineNo() + "', reading= '" + bill.getReading() + "',amountDue= '" + bill.getAmountDue() + "',status= '" + bill.getStatus() + "',recordedDate= '" + bill.getDueDate() + "',dueDate= '" + bill.getDueDate() + "',recordedBy= '" + bill.getRecordedBy() + "'WHERE id = '" + bill.getId() + "'";
         conn = ConnectionFactory.getConnection();
         state = conn.createStatement();
         state.executeUpdate(query);
@@ -88,7 +157,7 @@ public class BillController implements BillInterface {
 
     @Override
     public List<Bill> getAllUnpaidBill() throws SQLException {
-      billList.clear();
+        billList.clear();
         String query = "SELECT * FROM bills WHERE status = 2 ORDER BY id ASC";
 
         conn = ConnectionFactory.getConnection();

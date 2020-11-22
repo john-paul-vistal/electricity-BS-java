@@ -5,6 +5,13 @@
  */
 package Views;
 
+import Controllers.AdminController;
+import Interface.AdminInterface;
+import Models.Admin;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author 1styrGroupC
@@ -33,9 +40,9 @@ public class Sign_In extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         signInForm = new javax.swing.JPanel();
         usernameLabel = new javax.swing.JLabel();
-        userName = new javax.swing.JTextField();
+        tfUserName = new javax.swing.JTextField();
         passwordLabel = new javax.swing.JLabel();
-        password = new javax.swing.JPasswordField();
+        tfPassword = new javax.swing.JPasswordField();
         signIn = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -122,21 +129,20 @@ public class Sign_In extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, signInFormLayout.createSequentialGroup()
                 .addGap(0, 71, Short.MAX_VALUE)
                 .addGroup(signInFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(userName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(password, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tfUserName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tfPassword, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(41, 41, 41))
             .addGroup(signInFormLayout.createSequentialGroup()
+                .addGap(39, 39, 39)
                 .addGroup(signInFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(signInFormLayout.createSequentialGroup()
-                        .addGap(192, 192, 192)
-                        .addComponent(signIn, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(signInFormLayout.createSequentialGroup()
-                        .addGap(39, 39, 39)
-                        .addGroup(signInFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(usernameLabel)
-                            .addComponent(passwordLabel))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(usernameLabel)
+                    .addComponent(passwordLabel))
+                .addContainerGap(436, Short.MAX_VALUE))
             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, signInFormLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(signIn, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(196, 196, 196))
         );
         signInFormLayout.setVerticalGroup(
             signInFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -145,14 +151,14 @@ public class Sign_In extends javax.swing.JFrame {
                 .addGap(55, 55, 55)
                 .addComponent(usernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(userName, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36)
+                .addComponent(tfUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(43, 43, 43)
                 .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(tfPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31)
                 .addComponent(signIn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(138, Short.MAX_VALUE))
+                .addContainerGap(113, Short.MAX_VALUE))
         );
 
         container.add(signInForm);
@@ -179,9 +185,31 @@ public class Sign_In extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void signInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInActionPerformed
-        Main recordsFrame = new Main();
-        recordsFrame.show();
-        this.dispose();
+        AdminInterface adminControllers = new AdminController();
+        List<Admin> adminList = new ArrayList<>();
+        try {
+            adminList = adminControllers.getAllAdmins();
+            String username = tfUserName.getText();
+            String password = tfPassword.getText();
+            for (Admin admin : adminList) {
+                if (admin.getUserName() == username && admin.getPassword() == password) {
+                    if (admin.getLevel() == 1 || admin.getLevel() == 2) {
+                        Main recordsFrame = new Main();
+                        recordsFrame.show();
+                        this.dispose();
+                    }else{
+                        Transactions transactionFrame = new Transactions();
+                        transactionFrame.show();
+                        this.dispose();
+                    }
+                }else{
+                    JOptionPane.showMessageDialog(null, "Incorrect Username or password ");
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+
     }//GEN-LAST:event_signInActionPerformed
 
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
@@ -237,12 +265,12 @@ public class Sign_In extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPasswordField password;
     private javax.swing.JLabel passwordLabel;
     private javax.swing.JButton signIn;
     private javax.swing.JPanel signInForm;
+    private javax.swing.JPasswordField tfPassword;
+    private javax.swing.JTextField tfUserName;
     private javax.swing.JLabel title;
-    private javax.swing.JTextField userName;
     private javax.swing.JLabel usernameLabel;
     // End of variables declaration//GEN-END:variables
 }

@@ -115,28 +115,25 @@
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="0" pref="71" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="userName" alignment="1" min="-2" pref="438" max="-2" attributes="0"/>
-                          <Component id="password" alignment="1" min="-2" pref="438" max="-2" attributes="0"/>
+                          <Component id="tfUserName" alignment="1" min="-2" pref="438" max="-2" attributes="0"/>
+                          <Component id="tfPassword" alignment="1" min="-2" pref="438" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
+                      <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="192" max="-2" attributes="0"/>
-                              <Component id="signIn" min="-2" pref="155" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="usernameLabel" min="-2" max="-2" attributes="0"/>
-                                  <Component id="passwordLabel" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
+                          <Component id="usernameLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="passwordLabel" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace pref="436" max="32767" attributes="0"/>
                   </Group>
                   <Component id="jPanel3" alignment="0" max="32767" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="signIn" min="-2" pref="155" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="196" max="-2" attributes="0"/>
+                  </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -146,14 +143,14 @@
                       <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
                       <Component id="usernameLabel" min="-2" pref="23" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="userName" min="-2" pref="42" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+                      <Component id="tfUserName" min="-2" pref="42" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
                       <Component id="passwordLabel" min="-2" pref="23" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="password" min="-2" pref="42" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="tfPassword" min="-2" pref="42" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
                       <Component id="signIn" min="-2" pref="54" max="-2" attributes="0"/>
-                      <EmptySpace pref="138" max="32767" attributes="0"/>
+                      <EmptySpace pref="113" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -167,7 +164,7 @@
                 <Property name="text" type="java.lang.String" value="Username"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="userName">
+            <Component class="javax.swing.JTextField" name="tfUserName">
             </Component>
             <Component class="javax.swing.JLabel" name="passwordLabel">
               <Properties>
@@ -177,7 +174,7 @@
                 <Property name="text" type="java.lang.String" value="Password"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JPasswordField" name="password">
+            <Component class="javax.swing.JPasswordField" name="tfPassword">
             </Component>
             <Component class="javax.swing.JButton" name="signIn">
               <Properties>

@@ -16,7 +16,8 @@ import java.util.*;
 public interface BillInterface {
     public List<Bill> getAllBill() throws SQLException;
     public List<Bill> getAllUnpaidBill() throws SQLException;
-    public List<Bill> getBill(String search) throws SQLException;
+    public List<Bill> searchBill(String electricityLineNo) throws SQLException;
+    public List<Bill> searchUnpaidBill(String electricityLineNo) throws SQLException;
     public Bill getBill(int id) throws SQLException;
     public void addBill(Bill bill) throws SQLException;
     public void updateBill(Bill bill) throws SQLException;
