@@ -15,7 +15,10 @@ import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -28,17 +31,22 @@ public class Transaction_Form extends javax.swing.JDialog {
     BillInterface billControllers = new BillController();
     HouseholdInterface houseControllers = new HouseholdController();
     AdminInterface adminControllers = new AdminController();
+    TransactionRecordInterface transactionControllers = new TransactionRecordsController();
     Bill bill;
+    TransactionRecords transaction;
 
     int billNum;
+    int userId;
+    double penalty;
 
     /**
      * Creates new form Transaction_Form1
      */
-    public Transaction_Form(java.awt.Frame parent, boolean modal, int billNumber) {
+    public Transaction_Form(java.awt.Frame parent, boolean modal, int billNumber, int userID) {
         super(parent, modal);
         initComponents();
         billNum = billNumber;
+        userId = userID;
         loadData();
     }
 
@@ -50,9 +58,13 @@ public class Transaction_Form extends javax.swing.JDialog {
             String lName = houseControllers.getHousehold(bill.getElectricityLineNo()).getlName();
             String mName = houseControllers.getHousehold(bill.getElectricityLineNo()).getmName();
             String address = houseControllers.getHousehold(bill.getElectricityLineNo()).getAddress();
+            Date dueDate = new SimpleDateFormat("yyyy-MM-dd").parse(bill.getDueDate());
+            Date lastRecordDate = new SimpleDateFormat("yyyy-MM-dd").parse(bill.getRecordedDate());
+            lastRecordDate.setMonth(lastRecordDate.getMonth() - 1);
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             accountNumberlbl.setText(Integer.toString(bill.getElectricityLineNo()));
             accountNamelbl.setText(lName + ", " + fName + " " + mName);
-            billingPeriodlbl.setText("2020 - 10 - 19  - " + bill.getRecordedDate());
+            billingPeriodlbl.setText(dateFormat.format(lastRecordDate) + " - " + bill.getRecordedDate());
             addresslbl.setText(address);
             dueDatelbl.setText(bill.getDueDate());
             String status;
@@ -63,9 +75,20 @@ public class Transaction_Form extends javax.swing.JDialog {
                 status = "OVERDUE";
                 statuslbl.setForeground(red);
             }
+            Date sa = new Date();
+            if (sa.compareTo(dueDate)>0) {
+                penalty = 10;
+            } else {
+                penalty = 0;
+            }
+            
+            
             statuslbl.setText(status);
-            amountDue.setText(formatter.format(bill.getAmountDue()));
+            tfPriceperkwh.setText(Double.toString(8.9012));
+            tfPenalty.setText(Double.toString(penalty));
+            totalAmountlbl.setText(formatter.format(bill.getAmountDue()+penalty));
             meterReading.setText(Integer.toString(bill.getReading()));
+            teller.setText(adminControllers.getAdmin(userId).getfName() + " " + adminControllers.getAdmin(userId).getlName());
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -139,12 +162,12 @@ public class Transaction_Form extends javax.swing.JDialog {
         jLabel6 = new javax.swing.JLabel();
         meterReading = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel29 = new javax.swing.JLabel();
-        amountDue = new javax.swing.JLabel();
+        tfPriceperkwh = new javax.swing.JLabel();
+        totalAmountlbl = new javax.swing.JLabel();
         jSeparator2 = new javax.swing.JSeparator();
         tfRendered = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
+        teller = new javax.swing.JLabel();
         jSeparator4 = new javax.swing.JSeparator();
         jLabel9 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -152,6 +175,8 @@ public class Transaction_Form extends javax.swing.JDialog {
         jLabel16 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         changelbl = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        tfPenalty = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator7 = new javax.swing.JSeparator();
         jPanel8 = new javax.swing.JPanel();
@@ -159,8 +184,8 @@ public class Transaction_Form extends javax.swing.JDialog {
         jLabel13 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        cancel = new javax.swing.JButton();
+        pay = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Transaction Form");
@@ -355,14 +380,14 @@ public class Transaction_Form extends javax.swing.JDialog {
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Amount Due:");
 
-        jLabel29.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel29.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel29.setText("........");
+        tfPriceperkwh.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        tfPriceperkwh.setForeground(new java.awt.Color(255, 255, 255));
+        tfPriceperkwh.setText("........");
 
-        amountDue.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        amountDue.setForeground(new java.awt.Color(255, 255, 255));
-        amountDue.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        amountDue.setText(".........");
+        totalAmountlbl.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        totalAmountlbl.setForeground(new java.awt.Color(255, 255, 255));
+        totalAmountlbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        totalAmountlbl.setText(".........");
 
         tfRendered.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         tfRendered.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
@@ -381,10 +406,10 @@ public class Transaction_Form extends javax.swing.JDialog {
         jLabel11.setForeground(new java.awt.Color(255, 255, 255));
         jLabel11.setText("Cash Rendered:");
 
-        jLabel8.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel8.setText("John Paul Vistal");
+        teller.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        teller.setForeground(new java.awt.Color(255, 255, 255));
+        teller.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        teller.setText("...........................");
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(255, 255, 255));
@@ -412,6 +437,14 @@ public class Transaction_Form extends javax.swing.JDialog {
         changelbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         changelbl.setText(".........");
 
+        jLabel10.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel10.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel10.setText("Penalty");
+
+        tfPenalty.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        tfPenalty.setForeground(new java.awt.Color(255, 255, 255));
+        tfPenalty.setText("........");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -422,7 +455,7 @@ public class Transaction_Form extends javax.swing.JDialog {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
+                            .addComponent(teller, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
                             .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jSeparator4, javax.swing.GroupLayout.Alignment.LEADING)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -449,20 +482,23 @@ public class Transaction_Form extends javax.swing.JDialog {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(tfRendered, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(amountDue, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(totalAmountlbl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(changelbl, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(68, 68, 68))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(meterReading, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel29, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(meterReading, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(tfPriceperkwh, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(tfPenalty, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addGap(121, 121, 121))
         );
         jPanel2Layout.setVerticalGroup(
@@ -479,7 +515,11 @@ public class Transaction_Form extends javax.swing.JDialog {
                 .addGap(27, 27, 27)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(jLabel29))
+                    .addComponent(tfPriceperkwh))
+                .addGap(21, 21, 21)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(tfPenalty))
                 .addGap(24, 24, 24)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -487,7 +527,7 @@ public class Transaction_Form extends javax.swing.JDialog {
                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel1)
-                        .addComponent(amountDue)))
+                        .addComponent(totalAmountlbl)))
                 .addGap(21, 21, 21)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tfRendered, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -499,7 +539,7 @@ public class Transaction_Form extends javax.swing.JDialog {
                     .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(changelbl))
                 .addGap(49, 49, 49)
-                .addComponent(jLabel8)
+                .addComponent(teller)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -580,17 +620,17 @@ public class Transaction_Form extends javax.swing.JDialog {
                 .addGap(23, 23, 23))
         );
 
-        jButton2.setText("Cancel");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        cancel.setText("Cancel");
+        cancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                cancelActionPerformed(evt);
             }
         });
 
-        jButton1.setText("Pay");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        pay.setText("Pay");
+        pay.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                payActionPerformed(evt);
             }
         });
 
@@ -601,9 +641,9 @@ public class Transaction_Form extends javax.swing.JDialog {
             .addComponent(container, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pay, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(46, 46, 46))
         );
         layout.setVerticalGroup(
@@ -612,8 +652,8 @@ public class Transaction_Form extends javax.swing.JDialog {
                 .addComponent(container, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pay, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -621,21 +661,35 @@ public class Transaction_Form extends javax.swing.JDialog {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
         this.dispose();
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_cancelActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void payActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_payActionPerformed
         try {
+            bill.setRecordedBy(userId);
             bill.setStatus(1);
             billControllers.updateBill(bill);
+            
+            
+            int billNumber = bill.getId();
+            int LineNumber = bill.getElectricityLineNo();
+            double penalty = Double.parseDouble(tfPenalty.getText());
+            double rendered = Double.parseDouble(tfRendered.getText());
+            double change = Double.parseDouble(changelbl.getText());
+            double total =  Double.parseDouble(totalAmountlbl.getText());
+            String recordeddate = java.time.LocalDate.now().toString();
+     
+            transaction = new TransactionRecords(0,LineNumber,billNumber,penalty,rendered,change,total,userId,recordeddate);
+            transactionControllers.addTransactionRecord(transaction);
             printRecord(container);
+            JOptionPane.showMessageDialog(null, "Transaction Success!");
             this.dispose();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
 
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_payActionPerformed
 
     private void tfRenderedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfRenderedActionPerformed
         System.out.println("Hello");
@@ -678,7 +732,7 @@ public class Transaction_Form extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                Transaction_Form dialog = new Transaction_Form(new javax.swing.JFrame(), true, 0);
+                Transaction_Form dialog = new Transaction_Form(new javax.swing.JFrame(), true, 0, 0);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -694,14 +748,13 @@ public class Transaction_Form extends javax.swing.JDialog {
     private javax.swing.JLabel accountNamelbl;
     private javax.swing.JLabel accountNumberlbl;
     private javax.swing.JLabel addresslbl;
-    private javax.swing.JLabel amountDue;
     private javax.swing.JLabel billingPeriodlbl;
+    private javax.swing.JButton cancel;
     private javax.swing.JLabel changelbl;
     private javax.swing.JPanel container;
     private javax.swing.JLabel dueDatelbl;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
@@ -715,13 +768,11 @@ public class Transaction_Form extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
-    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -737,7 +788,12 @@ public class Transaction_Form extends javax.swing.JDialog {
     private javax.swing.JSeparator jSeparator7;
     private javax.swing.JSeparator jSeparator8;
     private javax.swing.JLabel meterReading;
+    private javax.swing.JButton pay;
     private javax.swing.JLabel statuslbl;
+    private javax.swing.JLabel teller;
+    private javax.swing.JLabel tfPenalty;
+    private javax.swing.JLabel tfPriceperkwh;
     private javax.swing.JTextField tfRendered;
+    private javax.swing.JLabel totalAmountlbl;
     // End of variables declaration//GEN-END:variables
 }

@@ -5,23 +5,32 @@
  */
 package Views;
 
-import Controllers.AdminController;
-import Interface.AdminInterface;
-import Models.Admin;
-import java.util.ArrayList;
-import java.util.List;
+import Utilities.ConnectionFactory;
+import java.sql.*;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author 1styrGroupC
  */
-public class Sign_In extends javax.swing.JFrame {
+public class Sign_In extends javax.swing.JDialog {
+
+    private Connection connection;
+    private Statement statement;
+
+    public int id;
+    public String userName;
+    public int level;
+    public String fName;
+    public String lName;
+    public String mName;
+    public boolean logged = false;
 
     /**
-     * Creates new form Main
+     * Creates new form Sign_In
      */
-    public Sign_In() {
+    public Sign_In(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
         initComponents();
     }
 
@@ -36,7 +45,6 @@ public class Sign_In extends javax.swing.JFrame {
 
         container = new javax.swing.JPanel();
         title = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         signInForm = new javax.swing.JPanel();
         usernameLabel = new javax.swing.JLabel();
@@ -48,12 +56,10 @@ public class Sign_In extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         backGround = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Billing System");
-        setAlwaysOnTop(true);
-        setBackground(new java.awt.Color(205, 248, 255));
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Sign In");
+        setFocusTraversalPolicyProvider(true);
         setUndecorated(true);
-        setResizable(false);
 
         container.setBackground(new java.awt.Color(51, 83, 249));
         container.setLayout(null);
@@ -63,15 +69,6 @@ public class Sign_In extends javax.swing.JFrame {
         title.setText("Electricity Billing System");
         container.add(title);
         title.setBounds(10, 0, 270, 40);
-
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/minimize.png"))); // NOI18N
-        jLabel3.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel3MouseClicked(evt);
-            }
-        });
-        container.add(jLabel3);
-        jLabel3.setBounds(590, 10, 25, 20);
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/poweroff.png"))); // NOI18N
         jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -89,6 +86,12 @@ public class Sign_In extends javax.swing.JFrame {
 
         passwordLabel.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
         passwordLabel.setText("Password");
+
+        tfPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfPasswordActionPerformed(evt);
+            }
+        });
 
         signIn.setBackground(new java.awt.Color(102, 224, 141));
         signIn.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
@@ -173,52 +176,83 @@ public class Sign_In extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(container, javax.swing.GroupLayout.DEFAULT_SIZE, 655, Short.MAX_VALUE)
+            .addComponent(container, javax.swing.GroupLayout.DEFAULT_SIZE, 658, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(container, javax.swing.GroupLayout.DEFAULT_SIZE, 688, Short.MAX_VALUE)
+            .addComponent(container, javax.swing.GroupLayout.DEFAULT_SIZE, 682, Short.MAX_VALUE)
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void signInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInActionPerformed
-        AdminInterface adminControllers = new AdminController();
-        List<Admin> adminList = new ArrayList<>();
+    private void tfPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfPasswordActionPerformed
+        String query = "SELECT * FROM admin WHERE userName='" + tfUserName.getText() + "' AND password='" + tfPassword.getText() + "'";
+        ResultSet rs = null;
         try {
-            adminList = adminControllers.getAllAdmins();
-            String username = tfUserName.getText();
-            String password = tfPassword.getText();
-            for (Admin admin : adminList) {
-                if (admin.getUserName() == username && admin.getPassword() == password) {
-                    if (admin.getLevel() == 1 || admin.getLevel() == 2) {
-                        Main recordsFrame = new Main();
-                        recordsFrame.show();
-                        this.dispose();
-                    }else{
-                        Transactions transactionFrame = new Transactions();
-                        transactionFrame.show();
-                        this.dispose();
-                    }
-                }else{
-                    JOptionPane.showMessageDialog(null, "Incorrect Username or password ");
-                }
+            connection = ConnectionFactory.getConnection();
+            statement = connection.createStatement();
+            rs = statement.executeQuery(query);
+            while (rs.next()) {
+                id = rs.getInt("id");
+                userName = rs.getString("userName");
+                level = rs.getInt("level");
+                fName = rs.getString("fName");
+                lName = rs.getString("lName");
+                mName = rs.getString("mName");
+                logged = true;
             }
+            if (logged == false) {
+                JOptionPane.showMessageDialog(null, "Invalid username/password. Please try again!");
+                tfPassword.setText("");
+            } else {
+                this.dispose();
+            }
+            connection.close();
+            statement.close();
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
+    }//GEN-LAST:event_tfPasswordActionPerformed
 
+    private void signInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInActionPerformed
+        String query = "SELECT * FROM admin WHERE userName='" + tfUserName.getText() + "' AND password='" + tfPassword.getText() + "'";
+        ResultSet rs = null;
+        try {
+            connection = ConnectionFactory.getConnection();
+            statement = connection.createStatement();
+            rs = statement.executeQuery(query);
+            while (rs.next()) {
+                id = rs.getInt("id");
+                userName = rs.getString("userName");
+                level = rs.getInt("level");
+                fName = rs.getString("fName");
+                lName = rs.getString("lName");
+                mName = rs.getString("mName");
+                logged = true;
+            }
+            if (logged == false) {
+                JOptionPane.showMessageDialog(null, "Invalid username/password. Please try again!");
+                tfPassword.setText("");
+            } else {
+                this.dispose();
+            }
+            connection.close();
+            statement.close();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
     }//GEN-LAST:event_signInActionPerformed
 
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
-        this.dispose();
+        int exit = JOptionPane.showConfirmDialog(null,"Close Application?","Exit",JOptionPane.OK_CANCEL_OPTION);
+        if(exit == 0){
+            System.exit(0);
+        }
     }//GEN-LAST:event_jLabel1MouseClicked
-
-    private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
-        this.setExtendedState(Sign_In.ICONIFIED);
-    }//GEN-LAST:event_jLabel3MouseClicked
 
     /**
      * @param args the command line arguments
@@ -247,13 +281,18 @@ public class Sign_In extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
 
-        /* Create and display the form */
+        /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Sign_In().setVisible(true);
+                Sign_In dialog = new Sign_In(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
             }
         });
     }
@@ -263,7 +302,6 @@ public class Sign_In extends javax.swing.JFrame {
     private javax.swing.JPanel container;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JLabel passwordLabel;
     private javax.swing.JButton signIn;

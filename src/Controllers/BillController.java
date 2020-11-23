@@ -158,7 +158,7 @@ public class BillController implements BillInterface {
     @Override
     public List<Bill> getAllUnpaidBill() throws SQLException {
         billList.clear();
-        String query = "SELECT * FROM bills WHERE status = 2 ORDER BY id ASC";
+        String query = "SELECT * FROM bills WHERE status != 1 ORDER BY id ASC";
 
         conn = ConnectionFactory.getConnection();
         state = conn.createStatement();

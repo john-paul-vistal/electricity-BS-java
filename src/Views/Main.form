@@ -69,19 +69,23 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jSeparator1" max="32767" attributes="0"/>
-                      <Component id="profileIcon" max="32767" attributes="0"/>
                       <Component id="dashBoard" max="32767" attributes="0"/>
                       <Component id="transaction" alignment="1" max="32767" attributes="0"/>
                       <Component id="acounts" alignment="0" max="32767" attributes="0"/>
-                      <Component id="userName" alignment="0" max="32767" attributes="0"/>
-                      <Component id="admins" alignment="1" max="32767" attributes="0"/>
+                      <Component id="userNamelbl" alignment="0" max="32767" attributes="0"/>
+                      <Component id="adminsbtn" alignment="1" max="32767" attributes="0"/>
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          <Component id="settings" min="-2" pref="51" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                          <Component id="logOut" min="-2" pref="51" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                          <Component id="close" min="-2" pref="51" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Component id="settings" min="-2" pref="51" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                                  <Component id="logOut" min="-2" pref="51" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                                  <Component id="close" min="-2" pref="51" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="profileIcon" alignment="1" min="-2" pref="160" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -94,7 +98,7 @@
                   <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                   <Component id="profileIcon" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="userName" min="-2" pref="27" max="-2" attributes="0"/>
+                  <Component id="userNamelbl" min="-2" pref="27" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jSeparator1" min="-2" pref="10" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -104,7 +108,7 @@
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="acounts" min="-2" pref="58" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="admins" min="-2" pref="58" max="-2" attributes="0"/>
+                  <Component id="adminsbtn" min="-2" pref="58" max="-2" attributes="0"/>
                   <EmptySpace pref="159" max="32767" attributes="0"/>
                   <Component id="jSeparator2" min="-2" pref="10" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -159,7 +163,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="acountsActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="admins">
+        <Component class="javax.swing.JButton" name="adminsbtn">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Tahoma" size="14" style="0"/>
@@ -167,12 +171,12 @@
             <Property name="text" type="java.lang.String" value="Admins"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="adminsActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="adminsbtnActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JSeparator" name="jSeparator1">
         </Component>
-        <Component class="javax.swing.JLabel" name="userName">
+        <Component class="javax.swing.JLabel" name="userNamelbl">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Tahoma" size="18" style="0"/>
@@ -180,7 +184,8 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="JOHN PAUL VISTAL"/>
+            <Property name="horizontalAlignment" type="int" value="0"/>
+            <Property name="text" type="java.lang.String" value=".........................."/>
           </Properties>
         </Component>
         <Component class="javax.swing.JSeparator" name="jSeparator2">

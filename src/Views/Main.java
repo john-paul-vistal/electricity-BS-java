@@ -33,18 +33,41 @@ public class Main extends javax.swing.JFrame {
     BillInterface billControllers = new BillController();
 
     Bill bill;
-
+    Admin admin;
     int adminID;
     int billID;
     int householdID;
-    int userID = 100020;
     double electricityRate = 8.9012;
+
+    public int userID;
+    public String userName;
+    public int userLevel;
+    public String fName;
+    public String lName;
+    public String mName;
+    public boolean logged = false;
 
     /**
      * Creates new form Main
      */
     public Main() {
         initComponents();
+        Sign_In signIn = new Sign_In(this, true);
+        signIn.setVisible(true);
+        if (signIn.logged == true) {
+            userName = signIn.userName;
+            userLevel = signIn.level;
+            userID = signIn.id;
+            fName = signIn.fName;
+            lName = signIn.lName;
+            mName = signIn.mName;
+            logged = signIn.logged;
+            if (userLevel == 2) {
+                adminsbtn.setVisible(false);
+            }
+            userNamelbl.setText(fName + " " + lName);
+        }
+
         icon();
         initialDisplay();
         loadAdmins();
@@ -148,17 +171,16 @@ public class Main extends javax.swing.JFrame {
         chart.add(barPanel, BorderLayout.CENTER);
         chart.validate();
     }
-    
-    
-    public void display(){
-        try{
-        String householdCount = Integer.toString(houseControllers.getAllHousehold().size());
-        String employeeCount = Integer.toString(adminControllers.getAllAdmins().size());
-        String unpaidBill = Integer.toString(billControllers.getAllUnpaidBill().size());
-        workersCountlbl.setText(employeeCount);
-        householdCountlbl.setText(householdCount);
-        unpaidBillslbl.setText(unpaidBill);
-        }catch(Exception e){
+
+    public void display() {
+        try {
+            String householdCount = Integer.toString(houseControllers.getAllHousehold().size());
+            String employeeCount = Integer.toString(adminControllers.getAllAdmins().size());
+            String unpaidBill = Integer.toString(billControllers.getAllUnpaidBill().size());
+            workersCountlbl.setText(employeeCount);
+            householdCountlbl.setText(householdCount);
+            unpaidBillslbl.setText(unpaidBill);
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
@@ -177,9 +199,9 @@ public class Main extends javax.swing.JFrame {
         dashBoard = new javax.swing.JButton();
         transaction = new javax.swing.JButton();
         acounts = new javax.swing.JButton();
-        admins = new javax.swing.JButton();
+        adminsbtn = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
-        userName = new javax.swing.JLabel();
+        userNamelbl = new javax.swing.JLabel();
         jSeparator2 = new javax.swing.JSeparator();
         close = new javax.swing.JButton();
         logOut = new javax.swing.JButton();
@@ -265,17 +287,18 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        admins.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        admins.setText("Admins");
-        admins.addActionListener(new java.awt.event.ActionListener() {
+        adminsbtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        adminsbtn.setText("Admins");
+        adminsbtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                adminsActionPerformed(evt);
+                adminsbtnActionPerformed(evt);
             }
         });
 
-        userName.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        userName.setForeground(new java.awt.Color(255, 255, 255));
-        userName.setText("JOHN PAUL VISTAL");
+        userNamelbl.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        userNamelbl.setForeground(new java.awt.Color(255, 255, 255));
+        userNamelbl.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        userNamelbl.setText("..........................");
 
         close.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/poweroff (1).png"))); // NOI18N
         close.setToolTipText("Close");
@@ -310,19 +333,21 @@ public class Main extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(sideNavBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSeparator1)
-                    .addComponent(profileIcon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(dashBoard, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(transaction, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(acounts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(userName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(admins, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(userNamelbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(adminsbtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sideNavBarLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(settings, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10)
-                        .addComponent(logOut, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10)
-                        .addComponent(close, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(sideNavBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sideNavBarLayout.createSequentialGroup()
+                                .addComponent(settings, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(10, 10, 10)
+                                .addComponent(logOut, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(10, 10, 10)
+                                .addComponent(close, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(profileIcon, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         sideNavBarLayout.setVerticalGroup(
@@ -331,7 +356,7 @@ public class Main extends javax.swing.JFrame {
                 .addGap(20, 20, 20)
                 .addComponent(profileIcon)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(userName, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(userNamelbl, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -341,7 +366,7 @@ public class Main extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(acounts, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(admins, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(adminsbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 159, Short.MAX_VALUE)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -519,7 +544,7 @@ public class Main extends javax.swing.JFrame {
 
         chart.setBackground(new java.awt.Color(51, 123, 249));
         chart.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        chart.setLayout(new java.awt.GridLayout());
+        chart.setLayout(new java.awt.GridLayout(1, 0));
 
         javax.swing.GroupLayout tab1Layout = new javax.swing.GroupLayout(tab1);
         tab1.setLayout(tab1Layout);
@@ -1000,17 +1025,17 @@ public class Main extends javax.swing.JFrame {
         tab4.setVisible(false);
     }//GEN-LAST:event_acountsActionPerformed
 
-    private void adminsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminsActionPerformed
+    private void adminsbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminsbtnActionPerformed
         tab1.setVisible(false);
         tab2.setVisible(false);
         tab3.setVisible(false);
         tab4.setVisible(true);
-    }//GEN-LAST:event_adminsActionPerformed
+    }//GEN-LAST:event_adminsbtnActionPerformed
 
     private void closeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeActionPerformed
         int close = JOptionPane.showConfirmDialog(null, "Are you sure you want to continue?", "Close Application", JOptionPane.OK_CANCEL_OPTION);
         if (close == 0) {
-            this.dispose();
+            System.exit(0);
         }
     }//GEN-LAST:event_closeActionPerformed
 
@@ -1021,9 +1046,9 @@ public class Main extends javax.swing.JFrame {
     private void logOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logOutActionPerformed
         int close = JOptionPane.showConfirmDialog(null, "Are you sure you want to continue?", "Sign Out", JOptionPane.OK_CANCEL_OPTION);
         if (close == 0) {
-            Sign_In signIn = new Sign_In();
-            signIn.show();
             this.dispose();
+            Main show = new Main();
+            show.setVisible(true);
         }
     }//GEN-LAST:event_logOutActionPerformed
 
@@ -1181,8 +1206,11 @@ public class Main extends javax.swing.JFrame {
             String electricityLineNo = tfElectricityLineNo.getText();
             String meterReading = tfMeterReading.getText();
             double amountDue = Double.parseDouble(meterReading) * electricityRate;
+            String recordeddate = java.time.LocalDate.now().toString();
+            String dueDate = java.time.LocalDate.now().plusMonths(1).toString();
+
             try {
-                bill = new Bill(0, Integer.parseInt(electricityLineNo), Integer.parseInt(meterReading), amountDue, 2, "2020-11-19", "2020-12-19", userID);
+                bill = new Bill(0, Integer.parseInt(electricityLineNo), Integer.parseInt(meterReading), amountDue, 2, recordeddate, dueDate, userID);
                 billControllers.addBill(bill);
                 JOptionPane.showMessageDialog(null, "Saved");
 
@@ -1196,8 +1224,10 @@ public class Main extends javax.swing.JFrame {
                 String electricityLineNo = tfElectricityLineNo.getText();
                 String meterReading = tfMeterReading.getText();
                 double amountDue = Double.parseDouble(meterReading) * electricityRate;
+                String recordeddate = java.time.LocalDate.now().toString();
+                String dueDate = java.time.LocalDate.now().plusMonths(1).toString();
                 try {
-                    bill = new Bill(billID, Integer.parseInt(electricityLineNo), Integer.parseInt(meterReading), amountDue, 2, "2020-11-19", "2020-12-19", userID);
+                    bill = new Bill(billID, Integer.parseInt(electricityLineNo), Integer.parseInt(meterReading), amountDue, 2, recordeddate, dueDate, userID);
                     billControllers.updateBill(bill);
                     JOptionPane.showMessageDialog(null, "Updated!");
                 } catch (Exception e) {
@@ -1276,7 +1306,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton addHouseholdBtn;
     private javax.swing.JTable adminTable;
     private javax.swing.JScrollPane adminTableContainer;
-    private javax.swing.JButton admins;
+    private javax.swing.JButton adminsbtn;
     private javax.swing.JTable billsTable;
     private javax.swing.JScrollPane billsTableContainer;
     private javax.swing.JPanel chart;
@@ -1329,7 +1359,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JTextField tfSearchHousehold;
     private javax.swing.JButton transaction;
     private javax.swing.JLabel unpaidBillslbl;
-    private javax.swing.JLabel userName;
+    private javax.swing.JLabel userNamelbl;
     private javax.swing.JLabel workersCountlbl;
     // End of variables declaration//GEN-END:variables
 }

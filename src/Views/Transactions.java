@@ -23,12 +23,32 @@ public class Transactions extends javax.swing.JFrame {
     AdminInterface adminControllers = new AdminController();
 
     int billNumber;
+  
+    public int userID;
+    public String userName;
+    public int userLevel;
+    public String fName;
+    public String lName;
+    public String mName;
+    public boolean logged = false;
 
     /**
      * Creates new form Transaction_Form
      */
     public Transactions() {
         initComponents();
+        Sign_In signIn = new Sign_In(this, true);
+        signIn.setVisible(true);
+        if (signIn.logged == true) {
+            userName = signIn.userName;
+            userLevel = signIn.level;
+            userID = signIn.id;
+            fName = signIn.fName;
+            lName = signIn.lName;
+            mName = signIn.mName;
+            logged = signIn.logged;
+            userNamelbl.setText(fName + " " + lName);
+        }
         initialDisplay();
         loadBills();
     }
@@ -75,11 +95,13 @@ public class Transactions extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         billsTableContainer = new javax.swing.JScrollPane();
         billsTable = new javax.swing.JTable();
-        jLabel3 = new javax.swing.JLabel();
+        userNamelbl = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        signOut = new javax.swing.JMenuItem();
+        exit = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
 
@@ -156,8 +178,8 @@ public class Transactions extends javax.swing.JFrame {
             billsTable.getColumnModel().getColumn(6).setResizable(false);
         }
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel3.setText("JOHN PAUL VISTAL");
+        userNamelbl.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        userNamelbl.setText("..............................");
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/profile2.png"))); // NOI18N
 
@@ -185,7 +207,7 @@ public class Transactions extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 368, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel3)
+                        .addComponent(userNamelbl)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel4))))
             .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -197,7 +219,7 @@ public class Transactions extends javax.swing.JFrame {
                     .addGroup(containerLayout.createSequentialGroup()
                         .addGap(3, 3, 3)
                         .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel3)
+                            .addComponent(userNamelbl)
                             .addComponent(jLabel4))
                         .addGap(11, 11, 11))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, containerLayout.createSequentialGroup()
@@ -220,7 +242,24 @@ public class Transactions extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jMenu1.setText("File");
+        jMenu1.setText("Menu");
+
+        signOut.setText("Sign Out");
+        signOut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                signOutActionPerformed(evt);
+            }
+        });
+        jMenu1.add(signOut);
+
+        exit.setText("Exit");
+        exit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitActionPerformed(evt);
+            }
+        });
+        jMenu1.add(exit);
+
         jMenuBar1.add(jMenu1);
 
         jMenu3.setText("Contact No.");
@@ -252,7 +291,7 @@ public class Transactions extends javax.swing.JFrame {
     }//GEN-LAST:event_billsTableMouseClicked
 
     private void createTransactionBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createTransactionBtnActionPerformed
-        Transaction_Form show = new Transaction_Form(this, true, billNumber);
+        Transaction_Form show = new Transaction_Form(this, true, billNumber,userID);
         show.setVisible(true);
         loadBills();
     }//GEN-LAST:event_createTransactionBtnActionPerformed
@@ -300,6 +339,22 @@ public class Transactions extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_SearchActionPerformed
 
+    private void signOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signOutActionPerformed
+       int close = JOptionPane.showConfirmDialog(null, "Are you sure you want to continue?", "Sign Out", JOptionPane.OK_CANCEL_OPTION);
+        if (close == 0) {
+            this.dispose();
+            Transactions show = new Transactions();
+            show.setVisible(true);
+        }
+    }//GEN-LAST:event_signOutActionPerformed
+
+    private void exitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitActionPerformed
+        int close = JOptionPane.showConfirmDialog(null, "Close Application", "Exit", JOptionPane.OK_CANCEL_OPTION);
+        if (close == 0) {
+            System.exit(0);
+        }
+    }//GEN-LAST:event_exitActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -342,9 +397,9 @@ public class Transactions extends javax.swing.JFrame {
     private javax.swing.JScrollPane billsTableContainer;
     private javax.swing.JPanel container;
     private javax.swing.JButton createTransactionBtn;
+    private javax.swing.JMenuItem exit;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -352,6 +407,8 @@ public class Transactions extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JButton refreshBtn;
+    private javax.swing.JMenuItem signOut;
     private javax.swing.JTextField tfElectricityLineNo;
+    private javax.swing.JLabel userNamelbl;
     // End of variables declaration//GEN-END:variables
 }
