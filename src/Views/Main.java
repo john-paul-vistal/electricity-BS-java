@@ -15,6 +15,8 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.*;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -22,22 +24,25 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
+import java.util.Map;
+
 /**
  *
  * @author 1styrGroupC
  */
 public class Main extends javax.swing.JFrame {
 
+    SettingsInterface settingControllers = new SettingsControllers();
     AdminInterface adminControllers = new AdminController();
     HouseholdInterface houseControllers = new HouseholdController();
     BillInterface billControllers = new BillController();
+    TransactionRecordInterface transactionControllers = new TransactionRecordsController();
 
     Bill bill;
     Admin admin;
     int adminID;
     int billID;
     int householdID;
-    double electricityRate = 8.9012;
 
     public int userID;
     public String userName;
@@ -63,9 +68,15 @@ public class Main extends javax.swing.JFrame {
             mName = signIn.mName;
             logged = signIn.logged;
             if (userLevel == 2) {
+                userNamelbl.setText(fName + " " + lName);
                 adminsbtn.setVisible(false);
+            } else if (userLevel == 3) {
+//                this.f.setVisible(false);
+//                Transactions display = new Transactions();
+//                display.setVisible(true);
+            } else {
+                userNamelbl.setText(fName + " " + lName);
             }
-            userNamelbl.setText(fName + " " + lName);
         }
 
         icon();
@@ -149,27 +160,25 @@ public class Main extends javax.swing.JFrame {
 
     public void chart() {
         DefaultCategoryDataset barchartData = new DefaultCategoryDataset();
-        barchartData.setValue(20000, "Amount", "January");
-        barchartData.setValue(18000, "Amount", "February");
-        barchartData.setValue(24000, "Amount", "March");
-        barchartData.setValue(20000, "Amount", "April");
-        barchartData.setValue(16000, "Amount", "May");
-        barchartData.setValue(19500, "Amount", "June");
-        barchartData.setValue(19500, "Amount", "July");
-        barchartData.setValue(25000, "Amount", "August");
-        barchartData.setValue(15402, "Amount", "September");
-        barchartData.setValue(26540, "Amount", "October");
-        barchartData.setValue(30000, "Amount", "November");
-        barchartData.setValue(50000, "Amount", "December");
-        JFreeChart barchart = ChartFactory.createBarChart3D("YEARLY PROFIT REPORT", "MONTHLY", "AMOUNT", barchartData, PlotOrientation.VERTICAL, false, true, false);
-        barchart.setBackgroundPaint(Color.CYAN);
-        barchart.getTitle().setPaint(Color.RED);
-        CategoryPlot barchrt = barchart.getCategoryPlot();
-        barchrt.setRangeGridlinePaint(Color.BLUE);
-        ChartPanel barPanel = new ChartPanel(barchart);
-        chart.removeAll();
-        chart.add(barPanel, BorderLayout.CENTER);
-        chart.validate();
+        try {
+            for (Map.Entry data : transactionControllers.getMonthlyIncome().entrySet()) {
+                double value = (double) data.getValue();
+                String year = Integer.toString((int) data.getKey());
+                barchartData.setValue(value, "Amount", year);
+            }
+
+            JFreeChart barchart = ChartFactory.createBarChart3D("YEARLY PROFIT REPORT", "YEARS", "AMOUNT", barchartData, PlotOrientation.VERTICAL, false, true, false);
+            barchart.setBackgroundPaint(Color.CYAN);
+            barchart.getTitle().setPaint(Color.RED);
+            CategoryPlot barchrt = barchart.getCategoryPlot();
+            barchrt.setRangeGridlinePaint(Color.BLUE);
+            ChartPanel barPanel = new ChartPanel(barchart);
+            chart.removeAll();
+            chart.add(barPanel, BorderLayout.CENTER);
+            chart.validate();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
     }
 
     public void display() {
@@ -224,6 +233,7 @@ public class Main extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         householdCountlbl = new javax.swing.JLabel();
         chart = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
         tab2 = new javax.swing.JPanel();
         billsTableContainer = new javax.swing.JScrollPane();
         billsTable = new javax.swing.JTable();
@@ -546,6 +556,13 @@ public class Main extends javax.swing.JFrame {
         chart.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         chart.setLayout(new java.awt.GridLayout(1, 0));
 
+        jButton1.setText("Refresh");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout tab1Layout = new javax.swing.GroupLayout(tab1);
         tab1.setLayout(tab1Layout);
         tab1Layout.setHorizontalGroup(
@@ -559,7 +576,10 @@ public class Main extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)))
+                        .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tab1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton1)))
                 .addContainerGap())
         );
         tab1Layout.setVerticalGroup(
@@ -570,8 +590,10 @@ public class Main extends javax.swing.JFrame {
                     .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(chart, javax.swing.GroupLayout.DEFAULT_SIZE, 503, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(chart, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1040,7 +1062,8 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_closeActionPerformed
 
     private void settingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingsActionPerformed
-        // TODO add your handling code here:
+        SettingsForm show = new SettingsForm(this, true);
+        show.setVisible(true);
     }//GEN-LAST:event_settingsActionPerformed
 
     private void logOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logOutActionPerformed
@@ -1202,14 +1225,12 @@ public class Main extends javax.swing.JFrame {
 
     private void saveBillBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBillBtnActionPerformed
         if ("Save".equals(saveBillBtn.getText())) {
-
-            String electricityLineNo = tfElectricityLineNo.getText();
-            String meterReading = tfMeterReading.getText();
-            double amountDue = Double.parseDouble(meterReading) * electricityRate;
-            String recordeddate = java.time.LocalDate.now().toString();
-            String dueDate = java.time.LocalDate.now().plusMonths(1).toString();
-
             try {
+                String electricityLineNo = tfElectricityLineNo.getText();
+                String meterReading = tfMeterReading.getText();
+                double amountDue = Double.parseDouble(meterReading) * settingControllers.getElectricityRate().getValue();
+                String recordeddate = java.time.LocalDate.now().toString();
+                String dueDate = java.time.LocalDate.now().plusMonths(1).toString();
                 bill = new Bill(0, Integer.parseInt(electricityLineNo), Integer.parseInt(meterReading), amountDue, 2, recordeddate, dueDate, userID);
                 billControllers.addBill(bill);
                 JOptionPane.showMessageDialog(null, "Saved");
@@ -1221,12 +1242,12 @@ public class Main extends javax.swing.JFrame {
         } else {
             int modify = JOptionPane.showConfirmDialog(null, "Save Changes?", "Modify Record", JOptionPane.OK_CANCEL_OPTION);
             if (modify == 0) {
-                String electricityLineNo = tfElectricityLineNo.getText();
-                String meterReading = tfMeterReading.getText();
-                double amountDue = Double.parseDouble(meterReading) * electricityRate;
-                String recordeddate = java.time.LocalDate.now().toString();
-                String dueDate = java.time.LocalDate.now().plusMonths(1).toString();
                 try {
+                    String electricityLineNo = tfElectricityLineNo.getText();
+                    String meterReading = tfMeterReading.getText();
+                    double amountDue = Double.parseDouble(meterReading) * settingControllers.getElectricityRate().getValue();
+                    String recordeddate = java.time.LocalDate.now().toString();
+                    String dueDate = java.time.LocalDate.now().plusMonths(1).toString();
                     bill = new Bill(billID, Integer.parseInt(electricityLineNo), Integer.parseInt(meterReading), amountDue, 2, recordeddate, dueDate, userID);
                     billControllers.updateBill(bill);
                     JOptionPane.showMessageDialog(null, "Updated!");
@@ -1264,6 +1285,10 @@ public class Main extends javax.swing.JFrame {
         chart();
         display();
     }//GEN-LAST:event_refreshBillsActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        chart();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1319,6 +1344,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel householdCountlbl;
     private javax.swing.JTable householdTable;
     private javax.swing.JScrollPane householdTableContainer;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

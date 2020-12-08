@@ -37,18 +37,18 @@ public class Transactions extends javax.swing.JFrame {
      */
     public Transactions() {
         initComponents();
-        Sign_In signIn = new Sign_In(this, true);
-        signIn.setVisible(true);
-        if (signIn.logged == true) {
-            userName = signIn.userName;
-            userLevel = signIn.level;
-            userID = signIn.id;
-            fName = signIn.fName;
-            lName = signIn.lName;
-            mName = signIn.mName;
-            logged = signIn.logged;
-            userNamelbl.setText(fName + " " + lName);
-        }
+//        Sign_In signIn = new Sign_In(this, true);
+//        signIn.setVisible(true);
+//        if (signIn.logged == true) {
+//            userName = signIn.userName;
+//            userLevel = signIn.level;
+//            userID = signIn.id;
+//            fName = signIn.fName;
+//            lName = signIn.lName;
+//            mName = signIn.mName;
+//            logged = signIn.logged;
+//            userNamelbl.setText(fName + " " + lName);
+//        }
         initialDisplay();
         loadBills();
     }
@@ -113,6 +113,7 @@ public class Transactions extends javax.swing.JFrame {
         createTransactionBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         createTransactionBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/pay.png"))); // NOI18N
         createTransactionBtn.setText("Create Transaction");
+        createTransactionBtn.setEnabled(false);
         createTransactionBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 createTransactionBtnActionPerformed(evt);
@@ -286,6 +287,7 @@ public class Transactions extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void billsTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_billsTableMouseClicked
+        createTransactionBtn.setEnabled(true);
         DefaultTableModel model = (DefaultTableModel) billsTable.getModel();
         billNumber = Integer.parseInt(model.getValueAt(billsTable.getSelectedRow(), 0).toString());
     }//GEN-LAST:event_billsTableMouseClicked
@@ -294,11 +296,13 @@ public class Transactions extends javax.swing.JFrame {
         Transaction_Form show = new Transaction_Form(this, true, billNumber,userID);
         show.setVisible(true);
         loadBills();
+        createTransactionBtn.setEnabled(false);
     }//GEN-LAST:event_createTransactionBtnActionPerformed
 
     private void refreshBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshBtnActionPerformed
         tfElectricityLineNo.setText("");
         loadBills();
+        createTransactionBtn.setEnabled(false);
     }//GEN-LAST:event_refreshBtnActionPerformed
 
     private void tfElectricityLineNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfElectricityLineNoActionPerformed

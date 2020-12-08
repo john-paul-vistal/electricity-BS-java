@@ -16,4 +16,5 @@ import java.util.*;
 public interface TransactionRecordInterface {
     public List<TransactionRecords> getAllTransactioin() throws SQLException;
     public void addTransactionRecord(TransactionRecords transaction) throws SQLException;
+    public HashMap<Integer, Double> getMonthlyIncome() throws SQLException;
 }
