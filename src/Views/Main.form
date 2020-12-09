@@ -786,8 +786,10 @@
             <Component class="javax.swing.JButton" name="printBillsBtn">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Print Bills"/>
-                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="printBillsBtnActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="tfElectricityLineNo">
               <Properties>

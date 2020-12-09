@@ -45,40 +45,17 @@ public class Main extends javax.swing.JFrame {
     int householdID;
 
     public int userID;
-    public String userName;
     public int userLevel;
     public String fName;
     public String lName;
     public String mName;
-    public boolean logged = false;
 
     /**
      * Creates new form Main
      */
-    public Main() {
+    public Main(int id) {
         initComponents();
-        Sign_In signIn = new Sign_In(this, true);
-        signIn.setVisible(true);
-        if (signIn.logged == true) {
-            userName = signIn.userName;
-            userLevel = signIn.level;
-            userID = signIn.id;
-            fName = signIn.fName;
-            lName = signIn.lName;
-            mName = signIn.mName;
-            logged = signIn.logged;
-            if (userLevel == 2) {
-                userNamelbl.setText(fName + " " + lName);
-                adminsbtn.setVisible(false);
-            } else if (userLevel == 3) {
-//                this.f.setVisible(false);
-//                Transactions display = new Transactions();
-//                display.setVisible(true);
-            } else {
-                userNamelbl.setText(fName + " " + lName);
-            }
-        }
-
+        userID = id;
         icon();
         initialDisplay();
         loadAdmins();
@@ -93,6 +70,23 @@ public class Main extends javax.swing.JFrame {
     }
 
     public void initialDisplay() {
+        try {
+            Admin admin = adminControllers.getAdmin(userID);
+            fName = admin.getfName();
+            lName = admin.getlName();
+            mName = admin.getmName();
+            userLevel = admin.getLevel();
+            
+            
+            userNamelbl.setText(fName+" "+lName);
+            if (userLevel == 2) {
+                adminsbtn.setVisible(false);
+                printBillsBtn.setVisible(false);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+
         this.setExtendedState(Main.MAXIMIZED_BOTH);
         tab1.setVisible(true);
         tab2.setVisible(false);
@@ -636,7 +630,11 @@ public class Main extends javax.swing.JFrame {
         }
 
         printBillsBtn.setText("Print Bills");
-        printBillsBtn.setEnabled(false);
+        printBillsBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                printBillsBtnActionPerformed(evt);
+            }
+        });
 
         tfElectricityLineNo.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
 
@@ -1070,8 +1068,8 @@ public class Main extends javax.swing.JFrame {
         int close = JOptionPane.showConfirmDialog(null, "Are you sure you want to continue?", "Sign Out", JOptionPane.OK_CANCEL_OPTION);
         if (close == 0) {
             this.dispose();
-            Main show = new Main();
-            show.setVisible(true);
+            Main_Run run = new Main_Run();
+            run.main(null);
         }
     }//GEN-LAST:event_logOutActionPerformed
 
@@ -1288,7 +1286,13 @@ public class Main extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         chart();
+        display();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void printBillsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printBillsBtnActionPerformed
+        Bill_Printer print = new Bill_Printer(this,true);
+        print.setVisible(true);
+    }//GEN-LAST:event_printBillsBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1320,7 +1324,7 @@ public class Main extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Main().setVisible(true);
+                new Main(0).setVisible(true);
             }
         });
     }

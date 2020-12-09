@@ -7,6 +7,7 @@ package Views;
 
 import Controllers.*;
 import Interface.*;
+import Models.Admin;
 import Models.Bill;
 import java.awt.Toolkit;
 import java.text.DecimalFormat;
@@ -35,25 +36,27 @@ public class Transactions extends javax.swing.JFrame {
     /**
      * Creates new form Transaction_Form
      */
-    public Transactions() {
+    public Transactions(int id) {
         initComponents();
-//        Sign_In signIn = new Sign_In(this, true);
-//        signIn.setVisible(true);
-//        if (signIn.logged == true) {
-//            userName = signIn.userName;
-//            userLevel = signIn.level;
-//            userID = signIn.id;
-//            fName = signIn.fName;
-//            lName = signIn.lName;
-//            mName = signIn.mName;
-//            logged = signIn.logged;
-//            userNamelbl.setText(fName + " " + lName);
-//        }
-        initialDisplay();
+        userID = id;
         loadBills();
+        initialDisplay();
+        
     }
 
     public void initialDisplay() {
+         try {
+            Admin admin = adminControllers.getAdmin(userID);
+            fName = admin.getfName();
+            lName = admin.getlName();
+            mName = admin.getmName();
+            userLevel = admin.getLevel();
+
+            userNamelbl.setText(fName+" "+lName);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+         
         this.setExtendedState(Main.MAXIMIZED_BOTH);
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo.png")));
     }
@@ -98,12 +101,8 @@ public class Transactions extends javax.swing.JFrame {
         userNamelbl = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        signOut = new javax.swing.JMenuItem();
-        exit = new javax.swing.JMenuItem();
-        jMenu3 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
+        logOut = new javax.swing.JButton();
+        close = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("The Flash Electricity Corp.(Transaction Page)");
@@ -184,6 +183,22 @@ public class Transactions extends javax.swing.JFrame {
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/profile2.png"))); // NOI18N
 
+        logOut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/logout.png"))); // NOI18N
+        logOut.setToolTipText("Log Out");
+        logOut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logOutActionPerformed(evt);
+            }
+        });
+
+        close.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/poweroff (1).png"))); // NOI18N
+        close.setToolTipText("Close");
+        close.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout containerLayout = new javax.swing.GroupLayout(container);
         container.setLayout(containerLayout);
         containerLayout.setHorizontalGroup(
@@ -200,8 +215,15 @@ public class Transactions extends javax.swing.JFrame {
                                 .addComponent(Search)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 280, Short.MAX_VALUE)
                                 .addComponent(refreshBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(14, 14, 14)
-                        .addComponent(createTransactionBtn)
+                        .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(containerLayout.createSequentialGroup()
+                                .addGap(14, 14, 14)
+                                .addComponent(createTransactionBtn))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, containerLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(logOut)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(close)))
                         .addContainerGap())
                     .addGroup(containerLayout.createSequentialGroup()
                         .addComponent(jLabel2)
@@ -236,40 +258,15 @@ public class Transactions extends javax.swing.JFrame {
                     .addComponent(refreshBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(billsTableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
+                    .addComponent(billsTableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 511, Short.MAX_VALUE)
                     .addGroup(containerLayout.createSequentialGroup()
                         .addComponent(createTransactionBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(close, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(logOut, javax.swing.GroupLayout.Alignment.TRAILING))))
                 .addContainerGap())
         );
-
-        jMenu1.setText("Menu");
-
-        signOut.setText("Sign Out");
-        signOut.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                signOutActionPerformed(evt);
-            }
-        });
-        jMenu1.add(signOut);
-
-        exit.setText("Exit");
-        exit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                exitActionPerformed(evt);
-            }
-        });
-        jMenu1.add(exit);
-
-        jMenuBar1.add(jMenu1);
-
-        jMenu3.setText("Contact No.");
-        jMenuBar1.add(jMenu3);
-
-        jMenu2.setText("About");
-        jMenuBar1.add(jMenu2);
-
-        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -343,21 +340,21 @@ public class Transactions extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_SearchActionPerformed
 
-    private void signOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signOutActionPerformed
-       int close = JOptionPane.showConfirmDialog(null, "Are you sure you want to continue?", "Sign Out", JOptionPane.OK_CANCEL_OPTION);
-        if (close == 0) {
-            this.dispose();
-            Transactions show = new Transactions();
-            show.setVisible(true);
-        }
-    }//GEN-LAST:event_signOutActionPerformed
-
-    private void exitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitActionPerformed
-        int close = JOptionPane.showConfirmDialog(null, "Close Application", "Exit", JOptionPane.OK_CANCEL_OPTION);
+    private void closeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeActionPerformed
+        int close = JOptionPane.showConfirmDialog(null, "Are you sure you want to continue?", "Close Application", JOptionPane.OK_CANCEL_OPTION);
         if (close == 0) {
             System.exit(0);
         }
-    }//GEN-LAST:event_exitActionPerformed
+    }//GEN-LAST:event_closeActionPerformed
+
+    private void logOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logOutActionPerformed
+        int close = JOptionPane.showConfirmDialog(null, "Are you sure you want to continue?", "Sign Out", JOptionPane.OK_CANCEL_OPTION);
+        if (close == 0) {
+            this.dispose();
+            Main_Run run = new Main_Run();
+            run.main(null);
+        }
+    }//GEN-LAST:event_logOutActionPerformed
 
     /**
      * @param args the command line arguments
@@ -390,7 +387,7 @@ public class Transactions extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Transactions().setVisible(true);
+                new Transactions(0).setVisible(true);
             }
         });
     }
@@ -399,19 +396,15 @@ public class Transactions extends javax.swing.JFrame {
     private javax.swing.JButton Search;
     private javax.swing.JTable billsTable;
     private javax.swing.JScrollPane billsTableContainer;
+    private javax.swing.JButton close;
     private javax.swing.JPanel container;
     private javax.swing.JButton createTransactionBtn;
-    private javax.swing.JMenuItem exit;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JButton logOut;
     private javax.swing.JButton refreshBtn;
-    private javax.swing.JMenuItem signOut;
     private javax.swing.JTextField tfElectricityLineNo;
     private javax.swing.JLabel userNamelbl;
     // End of variables declaration//GEN-END:variables

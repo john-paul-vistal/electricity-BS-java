@@ -142,7 +142,7 @@ public class BillController implements BillInterface {
 
     @Override
     public void updateBill(Bill bill) throws SQLException {
-        String query = "UPDATE bills SET electricityLineNo = '" + bill.getElectricityLineNo() + "', reading= '" + bill.getReading() + "',amountDue= '" + bill.getAmountDue() + "',status= '" + bill.getStatus() + "',recordedDate= '" + bill.getDueDate() + "',dueDate= '" + bill.getDueDate() + "',recordedBy= '" + bill.getRecordedBy() + "'WHERE id = '" + bill.getId() + "'";
+        String query = "UPDATE bills SET electricityLineNo = '" + bill.getElectricityLineNo() + "', reading= '" + bill.getReading() + "',amountDue= '" + bill.getAmountDue() + "',status= '" + bill.getStatus() + "',recordedDate= '" + bill.getRecordedDate()+ "',dueDate= '" + bill.getDueDate() + "',recordedBy= '" + bill.getRecordedBy() + "'WHERE id = '" + bill.getId() + "'";
         conn = ConnectionFactory.getConnection();
         state = conn.createStatement();
         state.executeUpdate(query);

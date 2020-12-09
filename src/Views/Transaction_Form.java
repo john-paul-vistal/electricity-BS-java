@@ -28,6 +28,7 @@ import javax.swing.JPanel;
  */
 public class Transaction_Form extends javax.swing.JDialog {
 
+    SettingsInterface settingControllers = new SettingsControllers();
     BillInterface billControllers = new BillController();
     HouseholdInterface houseControllers = new HouseholdController();
     AdminInterface adminControllers = new AdminController();
@@ -76,17 +77,16 @@ public class Transaction_Form extends javax.swing.JDialog {
                 statuslbl.setForeground(red);
             }
             Date sa = new Date();
-            if (sa.compareTo(dueDate)>0) {
+            if (sa.compareTo(dueDate) > 0) {
                 penalty = 10;
             } else {
                 penalty = 0;
             }
-            
-            
+
             statuslbl.setText(status);
-            tfPriceperkwh.setText(Double.toString(8.9012));
+            tfPriceperkwh.setText(Double.toString(settingControllers.getElectricityRate().getValue()));
             tfPenalty.setText(Double.toString(penalty));
-            totalAmountlbl.setText(formatter.format(bill.getAmountDue()+penalty));
+            totalAmountlbl.setText(formatter.format(bill.getAmountDue() + penalty));
             meterReading.setText(Integer.toString(bill.getReading()));
             teller.setText(adminControllers.getAdmin(userId).getfName() + " " + adminControllers.getAdmin(userId).getlName());
 
@@ -177,6 +177,7 @@ public class Transaction_Form extends javax.swing.JDialog {
         changelbl = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         tfPenalty = new javax.swing.JLabel();
+        error = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator7 = new javax.swing.JSeparator();
         jPanel8 = new javax.swing.JPanel();
@@ -396,11 +397,6 @@ public class Transaction_Form extends javax.swing.JDialog {
                 tfRenderedCaretUpdate(evt);
             }
         });
-        tfRendered.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tfRenderedActionPerformed(evt);
-            }
-        });
 
         jLabel11.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(255, 255, 255));
@@ -480,9 +476,10 @@ public class Transaction_Form extends javax.swing.JDialog {
                                 .addComponent(jLabel16)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(tfRendered, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(totalAmountlbl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(tfRendered, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
+                                .addComponent(totalAmountlbl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
+                                .addComponent(error, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addComponent(changelbl, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(68, 68, 68))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -533,7 +530,9 @@ public class Transaction_Form extends javax.swing.JDialog {
                     .addComponent(tfRendered, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(21, 21, 21)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(error, javax.swing.GroupLayout.PREFERRED_SIZE, 9, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -667,20 +666,21 @@ public class Transaction_Form extends javax.swing.JDialog {
 
     private void payActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_payActionPerformed
         try {
+            statuslbl.setText("PAID");
+            String recordeddate = java.time.LocalDate.now().toString();
             bill.setRecordedBy(userId);
             bill.setStatus(1);
+            bill.setRecordedDate(recordeddate);
             billControllers.updateBill(bill);
-            
-            
+
             int billNumber = bill.getId();
             int LineNumber = bill.getElectricityLineNo();
             double penalty = Double.parseDouble(tfPenalty.getText());
             double rendered = Double.parseDouble(tfRendered.getText());
             double change = Double.parseDouble(changelbl.getText());
-            double total =  Double.parseDouble(totalAmountlbl.getText());
-            String recordeddate = java.time.LocalDate.now().toString();
-     
-            transaction = new TransactionRecords(0,LineNumber,billNumber,penalty,rendered,change,total,userId,recordeddate);
+            double total = Double.parseDouble(totalAmountlbl.getText());
+
+            transaction = new TransactionRecords(0, LineNumber, billNumber, penalty, rendered, change, total, userId, recordeddate);
             transactionControllers.addTransactionRecord(transaction);
             printRecord(container);
             JOptionPane.showMessageDialog(null, "Transaction Success!");
@@ -691,14 +691,14 @@ public class Transaction_Form extends javax.swing.JDialog {
 
     }//GEN-LAST:event_payActionPerformed
 
-    private void tfRenderedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfRenderedActionPerformed
-        System.out.println("Hello");
-    }//GEN-LAST:event_tfRenderedActionPerformed
-
     private void tfRenderedCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_tfRenderedCaretUpdate
-        DecimalFormat formatter = new DecimalFormat("#0.00");
-        double change = Double.parseDouble(tfRendered.getText()) - bill.getAmountDue();
-        changelbl.setText(formatter.format(change));
+        try {
+            DecimalFormat formatter = new DecimalFormat("#0.00");
+            double change = Double.parseDouble(tfRendered.getText()) - bill.getAmountDue();
+            changelbl.setText(formatter.format(change));
+        } catch (Exception e) {
+            System.out.println("");
+        }
     }//GEN-LAST:event_tfRenderedCaretUpdate
 
     /**
@@ -753,6 +753,7 @@ public class Transaction_Form extends javax.swing.JDialog {
     private javax.swing.JLabel changelbl;
     private javax.swing.JPanel container;
     private javax.swing.JLabel dueDatelbl;
+    private javax.swing.JLabel error;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

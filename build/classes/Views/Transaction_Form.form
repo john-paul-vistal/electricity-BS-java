@@ -448,9 +448,10 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="103" alignment="0" groupAlignment="0" attributes="0">
-                                      <Component id="tfRendered" alignment="1" min="-2" pref="146" max="-2" attributes="0"/>
-                                      <Component id="totalAmountlbl" alignment="1" min="-2" pref="146" max="-2" attributes="0"/>
+                                  <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="tfRendered" alignment="1" pref="146" max="32767" attributes="0"/>
+                                      <Component id="totalAmountlbl" alignment="1" pref="146" max="32767" attributes="0"/>
+                                      <Component id="error" alignment="1" max="32767" attributes="0"/>
                                   </Group>
                                   <Component id="changelbl" min="-2" pref="146" max="-2" attributes="0"/>
                               </Group>
@@ -518,7 +519,9 @@
                           <Component id="jLabel11" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
                           <Component id="jLabel3" alignment="3" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="error" min="-2" pref="9" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel16" alignment="3" max="32767" attributes="0"/>
                           <Component id="jLabel18" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
@@ -627,7 +630,6 @@
               </Properties>
               <Events>
                 <EventHandler event="caretUpdate" listener="javax.swing.event.CaretListener" parameters="javax.swing.event.CaretEvent" handler="tfRenderedCaretUpdate"/>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tfRenderedActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel11">
@@ -744,6 +746,8 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="........"/>
               </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="error">
             </Component>
           </SubComponents>
         </Container>
