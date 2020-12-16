@@ -40,6 +40,7 @@ public class Main extends javax.swing.JFrame {
 
     Bill bill;
     Admin admin;
+
     int adminID;
     int billID;
     int householdID;
@@ -76,9 +77,8 @@ public class Main extends javax.swing.JFrame {
             lName = admin.getlName();
             mName = admin.getmName();
             userLevel = admin.getLevel();
-            
-            
-            userNamelbl.setText(fName+" "+lName);
+
+            userNamelbl.setText(fName + " " + lName);
             if (userLevel == 2) {
                 adminsbtn.setVisible(false);
                 printBillsBtn.setVisible(false);
@@ -599,7 +599,7 @@ public class Main extends javax.swing.JFrame {
 
             },
             new String [] {
-                "id", "HOUSELINE NO.", "METER READING(kwH)", "AMOUNT DUE(P)", "STATUS", "RECORDED DATE", "DUE DATE", "RECORDED BY"
+                "id", "ELECTRICITY LINE NO.", "METER READING(kwH)", "AMOUNT DUE(P)", "STATUS", "RECORDED DATE", "DUE DATE", "RECORDED BY"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -734,11 +734,11 @@ public class Main extends javax.swing.JFrame {
 
             },
             new String [] {
-                "HOUSELINE NO.", "FULL NAME", "CONTACT NO.", "ADDRESS", "STREET NO."
+                "ELECTRICITY LINE NO.", "FULL NAME", "CONTACT NO.", "ADDRESS", "STREET NO."
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -756,6 +756,7 @@ public class Main extends javax.swing.JFrame {
             householdTable.getColumnModel().getColumn(1).setResizable(false);
             householdTable.getColumnModel().getColumn(2).setResizable(false);
             householdTable.getColumnModel().getColumn(3).setResizable(false);
+            householdTable.getColumnModel().getColumn(4).setResizable(false);
         }
 
         tfSearchHousehold.addCaretListener(new javax.swing.event.CaretListener() {
@@ -842,7 +843,7 @@ public class Main extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "FULL NAME", "USERNAME", "PASSWORD", "CONTACT NO.", "LEVEL"
+                "WORKER ID", "FULL NAME", "USERNAME", "PASSWORD", "CONTACT NO.", "LEVEL"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -862,20 +863,14 @@ public class Main extends javax.swing.JFrame {
         if (adminTable.getColumnModel().getColumnCount() > 0) {
             adminTable.getColumnModel().getColumn(0).setResizable(false);
             adminTable.getColumnModel().getColumn(0).setPreferredWidth(8);
-            adminTable.getColumnModel().getColumn(0).setHeaderValue("HOUSELINE NO.");
             adminTable.getColumnModel().getColumn(1).setResizable(false);
-            adminTable.getColumnModel().getColumn(1).setHeaderValue("FULL NAME");
             adminTable.getColumnModel().getColumn(2).setResizable(false);
             adminTable.getColumnModel().getColumn(2).setPreferredWidth(18);
-            adminTable.getColumnModel().getColumn(2).setHeaderValue("USERNAME");
             adminTable.getColumnModel().getColumn(3).setResizable(false);
             adminTable.getColumnModel().getColumn(3).setPreferredWidth(18);
-            adminTable.getColumnModel().getColumn(3).setHeaderValue("PASSWORD");
             adminTable.getColumnModel().getColumn(4).setResizable(false);
-            adminTable.getColumnModel().getColumn(4).setHeaderValue("CONTACT NO.");
             adminTable.getColumnModel().getColumn(5).setResizable(false);
             adminTable.getColumnModel().getColumn(5).setPreferredWidth(10);
-            adminTable.getColumnModel().getColumn(5).setHeaderValue("LEVEL");
         }
 
         searchAdmin.addCaretListener(new javax.swing.event.CaretListener() {
@@ -1226,12 +1221,24 @@ public class Main extends javax.swing.JFrame {
             try {
                 String electricityLineNo = tfElectricityLineNo.getText();
                 String meterReading = tfMeterReading.getText();
-                double amountDue = Double.parseDouble(meterReading) * settingControllers.getElectricityRate().getValue();
-                String recordeddate = java.time.LocalDate.now().toString();
-                String dueDate = java.time.LocalDate.now().plusMonths(1).toString();
-                bill = new Bill(0, Integer.parseInt(electricityLineNo), Integer.parseInt(meterReading), amountDue, 2, recordeddate, dueDate, userID);
-                billControllers.addBill(bill);
-                JOptionPane.showMessageDialog(null, "Saved");
+
+                int found = 0;
+                for (Household house : houseControllers.getAllHousehold()) {
+                    if (house.getElectricityLineNo() == Integer.parseInt(electricityLineNo)) {
+                        found = 1;
+                    }
+                }
+
+                if (found == 1) {
+                    double amountDue = Double.parseDouble(meterReading) * settingControllers.getElectricityRate().getValue();
+                    String recordeddate = java.time.LocalDate.now().toString();
+                    String dueDate = java.time.LocalDate.now().plusMonths(1).toString();
+                    bill = new Bill(0, Integer.parseInt(electricityLineNo), Integer.parseInt(meterReading), amountDue, 2, recordeddate, dueDate, userID);
+                    billControllers.addBill(bill);
+                    JOptionPane.showMessageDialog(null, "Saved");
+                }else{
+                    JOptionPane.showMessageDialog(null, "Invalid Electricity Line Number");
+                }
 
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e.getMessage());
@@ -1290,7 +1297,7 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void printBillsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printBillsBtnActionPerformed
-        Bill_Printer print = new Bill_Printer(this,true);
+        Bill_Printer print = new Bill_Printer(this, true);
         print.setVisible(true);
     }//GEN-LAST:event_printBillsBtnActionPerformed
 

@@ -21,5 +21,4 @@ public interface BillInterface {
     public Bill getBill(int id) throws SQLException;
     public void addBill(Bill bill) throws SQLException;
     public void updateBill(Bill bill) throws SQLException;
-    public void deleteBill(int id) throws SQLException;
 }

@@ -3,10 +3,32 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Views/Household_Form.java</file>
             <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Views/Transactions.java</file>
-            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Views/Main_Run.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Views/Admin_Form.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Utilities/ConnectionFactory.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Models/Bill.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Models/Household.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Models/Admin.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Utilities/DBUtil.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Views/Transaction_Form.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Controllers/HouseholdController.java</file>
             <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Views/Sign_In.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Models/TransactionRecords.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Views/Modify_Household_Form.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Interface/TransactionRecordInterface.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Controllers/SettingsControllers.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Controllers/BillController.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Views/Bill_Printer.java</file>
             <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Views/Main.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Views/SettingsForm.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Models/Settings.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Views/Modify_Admin_Form.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Interface/AdminInterface.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Views/Main_Run.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Controllers/AdminController.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Controllers/TransactionRecordsController.java</file>
+            <file>file:/C:/Users/1styrGroupC/Documents/NetBeansProjects/ELectricity_Billing_System/src/Views/logo.png</file>
         </group>
     </open-files>
 </project-private>
